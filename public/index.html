@@ -3,9 +3,50 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Приветствие</title>
+    <title>Трекер вредных привычек</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/dayjs/1.11.10/dayjs.min.js"></script>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; padding: 50px; }
+        #timer { font-size: 24px; margin-top: 20px; }
+        button { padding: 10px 20px; font-size: 18px; cursor: pointer; }
+    </style>
 </head>
 <body>
-    <h1>Привет, мир!</h1>
+    <h1>Трекер вредных привычек</h1>
+    <button id="startBtn">Я чист уже</button>
+    <div id="timer">0 дней 0 часов 0 минут 0 секунд</div>
+
+    <script>
+        const startBtn = document.getElementById("startBtn");
+        const timerDisplay = document.getElementById("timer");
+
+        function updateTimer(startTime) {
+            function calculateTime() {
+                const now = dayjs();
+                const diff = now.diff(startTime, "second");
+
+                const days = Math.floor(diff / 86400);
+                const hours = Math.floor((diff % 86400) / 3600);
+                const minutes = Math.floor((diff % 3600) / 60);
+                const seconds = diff % 60;
+
+                timerDisplay.textContent = `${days} дней ${hours} часов ${minutes} минут ${seconds} секунд`;
+            }
+
+            calculateTime();
+            setInterval(calculateTime, 1000); // Обновление каждую секунду
+        }
+
+        startBtn.addEventListener("click", () => {
+            const startTime = dayjs().toISOString();
+            localStorage.setItem("startTime", startTime);
+            updateTimer(dayjs(startTime));
+        });
+
+        const savedTime = localStorage.getItem("startTime");
+        if (savedTime) {
+            updateTimer(dayjs(savedTime));
+        }
+    </script>
 </body>
 </html>
